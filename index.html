@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>Pocket Arcade</title>
+<meta name="theme-color" content="#0e1124">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Arcade">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="stylesheet" href="fonts.css">
+<style>
+  :root{
+    color-scheme:dark;
+    --ground:#0e1124;
+    --ground-2:#151a36;
+    --card:#1a1f3e;
+    --line:rgba(170,180,255,.14);
+    --ink:#eef0ff;
+    --muted:#9aa1c7;
+    --amber:#ffb347;
+    --ok:#5fe3a1;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;min-height:100%;background:var(--ground)}
+  body{
+    color:var(--ink);font-family:Rubik,system-ui,sans-serif;
+    background:radial-gradient(130% 60% at 50% -10%,#2a2f6b 0%,var(--ground-2) 38%,var(--ground) 70%);
+    background-color:var(--ground);
+    padding-block:calc(env(safe-area-inset-top,0px) + 22px) calc(env(safe-area-inset-bottom,0px) + 28px);
+    padding-inline:max(16px,env(safe-area-inset-left,0px));
+    -webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;-webkit-text-size-adjust:100%;
+  }
+  .wrap{max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+  header{display:flex;flex-direction:column;gap:6px}
+  h1{margin:0;font:400 clamp(30px,9vw,46px)/1 Bungee,"Arial Black",sans-serif;letter-spacing:.01em;
+     background:linear-gradient(180deg,#fff 10%,#ffd8a0 60%,var(--amber) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{margin:0;color:var(--muted);font-size:15px}
+  .status{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid var(--line);font-size:14px;line-height:1.35}
+  .dot{flex:none;width:10px;height:10px;border-radius:50%;background:var(--amber);box-shadow:0 0 10px var(--amber)}
+  .status.ok .dot{background:var(--ok);box-shadow:0 0 10px var(--ok)}
+  .status.err .dot{background:#ff6b7a;box-shadow:0 0 10px #ff6b7a}
+  .bar{height:4px;border-radius:2px;background:rgba(255,255,255,.08);overflow:hidden;margin-top:6px}
+  .bar i{display:block;height:100%;width:0;background:var(--amber);transition:width .3s}
+  .status.ok .bar{display:none}
+  .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  @media (min-width:620px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+  .card{display:flex;flex-direction:column;border-radius:18px;overflow:hidden;background:var(--card);border:1px solid var(--line);color:inherit;text-decoration:none;transition:transform .12s}
+  .card:active{transform:scale(.97)}
+  .card:focus-visible{outline:2px solid var(--amber);outline-offset:3px}
+  .thumb{aspect-ratio:4/3;width:100%;max-width:100%;display:block;object-fit:cover;background:#0a0c18}
+  .meta{padding:10px 12px 12px;display:flex;flex-direction:column;gap:3px}
+  .name{font-weight:800;font-size:16px;letter-spacing:.01em}
+  .tag{font-size:12.5px;color:var(--muted);line-height:1.3}
+  .hint{border-radius:14px;padding:12px 14px;background:rgba(255,179,71,.08);border:1px solid rgba(255,179,71,.28);font-size:14px;line-height:1.45;color:#ffe2bb}
+  .hint b{color:#fff}
+  footer{color:var(--muted);font-size:12px;text-align:center}
+  @media (prefers-reduced-motion:reduce){.card{transition:none}.bar i{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Pocket Arcade</h1>
+    <p class="sub">Six games. No internet needed once they're saved.</p>
+  </header>
+
+  <div class="status" id="status" role="status">
+    <span class="dot"></span>
+    <div style="flex:1">
+      <div id="statusText">Saving games for offline play…</div>
+      <div class="bar"><i id="barFill"></i></div>
+    </div>
+  </div>
+
+  <div class="hint" id="installHint" hidden></div>
+
+  <nav class="grid" aria-label="Games">
+    <a class="card" href="brick.html"><img class="thumb" src="thumb-brick.jpg" alt=""><div class="meta"><span class="name">Brick Breaker</span><span class="tag">The BlackBerry classic. 10 levels, power-ups.</span></div></a>
+    <a class="card" href="vault.html"><img class="thumb" src="thumb-vault.jpg" alt=""><div class="meta"><span class="name">Vault Runner</span><span class="tag">Dig, climb, grab the gold. 15 vaults.</span></div></a>
+    <a class="card" href="kart.html"><img class="thumb" src="thumb-kart.jpg" alt=""><div class="meta"><span class="name">Pinecone Grand Prix</span><span class="tag">3D kart racing, six karts, three laps.</span></div></a>
+    <a class="card" href="snake.html"><img class="thumb" src="thumb-snake.jpg" alt=""><div class="meta"><span class="name">Snake</span><span class="tag">Old phone favorite. Classic, Wrap, Maze.</span></div></a>
+    <a class="card" href="merge.html"><img class="thumb" src="thumb-merge.jpg" alt=""><div class="meta"><span class="name">2048</span><span class="tag">Slide and merge. Saves as you go.</span></div></a>
+    <a class="card" href="mines.html"><img class="thumb" src="thumb-mines.jpg" alt=""><div class="meta"><span class="name">Mines</span><span class="tag">Minesweeper built for thumbs.</span></div></a>
+  </nav>
+
+  <footer>Scores and progress save on this phone.</footer>
+</div>
+
+<script>
+const FILES = ["./", "./apple-touch-icon.png", "./brick.html", "./bungee-latin-400-normal.woff2", "./chakra-petch-latin-400-normal.woff2", "./chakra-petch-latin-600-normal.woff2", "./chakra-petch-latin-700-normal.woff2", "./fonts.css", "./fredoka-latin-400-normal.woff2", "./fredoka-latin-500-normal.woff2", "./fredoka-latin-600-normal.woff2", "./fredoka-latin-700-normal.woff2", "./icon-192.png", "./icon-512-maskable.png", "./icon-512.png", "./index.html", "./kart.html", "./manifest.webmanifest", "./merge.html", "./mines.html", "./press-start-2p-latin-400-normal.woff2", "./rubik-latin-400-normal.woff2", "./rubik-latin-600-normal.woff2", "./rubik-latin-800-normal.woff2", "./silkscreen-latin-400-normal.woff2", "./silkscreen-latin-700-normal.woff2", "./snake.html", "./three.r128.min.js", "./thumb-brick.jpg", "./thumb-kart.jpg", "./thumb-merge.jpg", "./thumb-mines.jpg", "./thumb-snake.jpg", "./thumb-vault.jpg", "./vault.html", "./vt323-latin-400-normal.woff2"];
+const statusEl=document.getElementById('status'),txt=document.getElementById('statusText'),fill=document.getElementById('barFill');
+const standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+const ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+const hint=document.getElementById('installHint');
+if(!standalone){
+  hint.innerHTML=ios
+    ?'<b>Put it on your home screen:</b> tap the Share button in Safari, then <b>Add to Home Screen</b>. Open it from there once before you fly.'
+    :'<b>Put it on your home screen:</b> open the browser menu and tap <b>Install app</b> or <b>Add to Home screen</b>. Open it from there once before you fly.';
+  hint.hidden=false;
+}
+async function check(){
+  if(!('caches' in window)){return 0}
+  let n=0;
+  for(const f of FILES){try{if(await caches.match(f,{ignoreSearch:true}))n++}catch(e){}}
+  return n;
+}
+async function poll(){
+  const n=await check(),total=FILES.length||1;
+  fill.style.width=Math.round(n/total*100)+'%';
+  if(n>=total){statusEl.className='status ok';txt.textContent='All 6 games are saved. They’ll work in airplane mode.';return}
+  txt.textContent=navigator.onLine?`Saving games for offline play… ${Math.round(n/total*100)}%`:'Connect to the internet once to save the games.';
+  setTimeout(poll,800);
+}
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('sw.js').then(()=>poll()).catch(()=>{statusEl.className='status err';txt.textContent='This browser can’t save the games for offline. Try Safari or Chrome.'});
+}else{statusEl.className='status err';txt.textContent='This browser can’t save the games for offline. Try Safari or Chrome.'}
+</script>
+</body>
+</html>
